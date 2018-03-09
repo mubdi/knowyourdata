@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 
 class KYD(object):
@@ -11,6 +12,9 @@ class KYD(object):
     f_allfinite = False
     f_hasnan = False
     f_hasinf = False
+
+    # Display Settings
+    col_width = 20
 
     def check_finite(self):
         """Checking to see if all elements are finite and setting flags"""
@@ -26,9 +30,56 @@ class KYD(object):
             if np.any(np.isinf(self.data)):
                 self.f_hasinf = True
 
+    def check_struct(self):
+        """Determining the Structure of the Numpy Array"""
+        self.dtype = self.data.dtype
+        self.ndim = self.data.ndim
+        self.shape = self.data.shape
+        self.size = self.data.size
+        self.memsize = sys.getsizeof(self.data)
+
+    def display_struct(self):
+        """Display information about array structure"""
+
+        pstr_list = []
+
+        pstr_struct_header1 = "ARRAY STRUCTURE:"
+        pstr_struct_header2 = "================="
+
+        pstr_list.append(pstr_struct_header1)
+        pstr_list.append(pstr_struct_header2)
+
+        pstr_n_dim = (
+            "Number of Dimensions:"
+            "{self.ndim:>{self.col_width}}").format(
+            self=self)
+        pstr_list.append(pstr_n_dim)
+
+        pstr_shape = (
+            "Shape of Dimensions: "
+            "{self.shape!s:>{self.col_width}}").format(
+            self=self)
+        pstr_list.append(pstr_shape)
+
+        pstr_dtype = (
+            "Array Data Type:     "
+            "{self.dtype!s:>{self.col_width}}").format(
+            self=self)
+        pstr_list.append(pstr_dtype)
+
+        pstr_memsize = (
+            "Memory Size (bytes): "
+            "{self.memsize:>{self.col_width}}").format(
+            self=self)
+        pstr_list.append(pstr_memsize)
+
+        # Printing all Structure Parameters
+        for pstr in pstr_list:
+            print(pstr)
+
     def display(self, short=False):
         """Displaying all relevant statistics"""
-        pass
+        self.display_struct()
 
     def __init__(self, data):
         super(KYD, self).__init__()
