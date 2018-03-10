@@ -23,7 +23,7 @@ class KYD(object):
             self.f_allfinite = True
         else:
             finite_inds = np.where(np.isfinite(self.data))
-            self.filt_x = self.data[finite_inds]
+            self.filt_data = self.data[finite_inds]
 
             if np.any(np.isnan(self.data)):
                 self.f_hasnan = True
@@ -38,14 +38,57 @@ class KYD(object):
         self.size = self.data.size
         self.memsize = sys.getsizeof(self.data)
 
+    def get_basic_stats(self):
+        """Get basic statistics about array"""
+        self.min = np.min(self.filt_data)
+        self.max = np.max(self.filt_data)
+        self.range = self.max - self.min
+        self.mean = np.mean(self.filt_data)
+        self.std = np.std(self.filt_data)
+
+    def display_basic_stats(self):
+        """Display basic statistics of array"""
+        pstr_list = []
+
+        pstr_struct_header0 = "                  "
+        pstr_struct_header1 = "Basic Statistics  "
+        pstr_struct_header2 = "                  "
+
+        pstr_list.append(pstr_struct_header0)
+        pstr_list.append(pstr_struct_header1)
+        pstr_list.append(pstr_struct_header2)
+
+        pstr_minmax = (
+            "Min "
+            "{self.min:_<{self.col_width}.4}"
+            "<= {self.range:^10.4} =>"
+            "{self.max:_>{self.col_width}.4}"
+            " Max"
+        ).format(self=self)
+        pstr_list.append(pstr_minmax)
+
+        pstr_meanstd = (
+            "Mean: "
+            "{self.mean:>{self.col_width}.4}"
+            " Standard Deviation: "
+            "{self.std:>{self.col_width}.4}"
+        ).format(self=self)
+        pstr_list.append(pstr_meanstd)
+
+        # Printing all Structure Parameters
+        for pstr in pstr_list:
+            print(pstr)
+
     def display_struct(self):
         """Display information about array structure"""
 
         pstr_list = []
 
-        pstr_struct_header1 = "ARRAY STRUCTURE:"
-        pstr_struct_header2 = "================="
+        # pstr_struct_header0 = "................."
+        pstr_struct_header1 = "Array Structure  "
+        pstr_struct_header2 = "                 "
 
+        # pstr_list.append(pstr_struct_header0)
         pstr_list.append(pstr_struct_header1)
         pstr_list.append(pstr_struct_header2)
 
@@ -79,7 +122,10 @@ class KYD(object):
 
     def display(self, short=False):
         """Displaying all relevant statistics"""
+        print()
         self.display_struct()
+        self.display_basic_stats()
+        print()
 
     def __init__(self, data):
         super(KYD, self).__init__()
@@ -88,9 +134,11 @@ class KYD(object):
         if type(data) != np.ndarray:
             data = np.array(data)
 
-        self.check_finite()
-
         self.data = data
+
+        self.check_finite()
+        self.check_struct()
+        self.get_basic_stats()
 
 
 def kyd(data, full_statistics=False):
