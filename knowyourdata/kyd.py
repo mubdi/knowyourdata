@@ -167,7 +167,7 @@ class KYD(object):
         pstr_list.append(pstr_dtype)
 
         pstr_memsize = (
-            "Memory Size (bytes): "
+            "Memory Size: "
             "{self.human_memsize:>15}").format(
             self=self)
         pstr_list.append(pstr_memsize)
