@@ -151,43 +151,47 @@ class KYD(object):
         pstr_n_dim = (
             "Number of Dimensions:"
             "{self.ndim:>15}").format(
-            self=self)
+                self=self)
         pstr_list.append(pstr_n_dim)
 
         pstr_shape = (
             "Shape of Dimensions: "
             "{self.shape!s:>15}").format(
-            self=self)
+                self=self)
         pstr_list.append(pstr_shape)
 
         pstr_dtype = (
             "Array Data Type:     "
             "{self.dtype!s:>15}").format(
-            self=self)
+                self=self)
         pstr_list.append(pstr_dtype)
 
         pstr_memsize = (
             "Memory Size: "
             "{self.human_memsize:>15}").format(
-            self=self)
+                self=self)
         pstr_list.append(pstr_memsize)
 
         return pstr_list
 
     def display(self, short=False):
         """Displaying all relevant statistics"""
+
+        if short:
+            pass
+
         print()
         pstr_basic = self.display_basic_stats()
         pstr_struct = self.display_struct()
 
         l_colwidth = 0
-        for string1 in (pstr_basic):
+        for string1 in pstr_basic:
             if len(string1) > l_colwidth:
                 l_colwidth = len(string1)
         l_colwidth += 1
 
         r_colwidth = 0
-        for string1 in (pstr_basic):
+        for string1 in pstr_basic:
             if len(string1) > r_colwidth:
                 r_colwidth = len(string1)
 
