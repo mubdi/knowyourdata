@@ -38,6 +38,7 @@ class KYD(object):
         self.shape = self.data.shape
         self.size = self.data.size
         self.memsize = sys.getsizeof(self.data)
+        self.human_memsize = sizeof_fmt(self.memsize)
 
     def get_basic_stats(self):
         """Get basic statistics about array"""
@@ -167,7 +168,7 @@ class KYD(object):
 
         pstr_memsize = (
             "Memory Size (bytes): "
-            "{self.memsize:>15}").format(
+            "{self.human_memsize:>15}").format(
             self=self)
         pstr_list.append(pstr_memsize)
 
@@ -221,6 +222,18 @@ class KYD(object):
         self.check_finite()
         self.check_struct()
         self.get_basic_stats()
+
+
+def sizeof_fmt(num, suffix='B'):
+    """Return human readable version of in-memory size.
+    Code from Fred Cirera from Stack Overflow:
+    https://stackoverflow.com/questions/1094841/reusable-library-to-get-human-readable-version-of-file-size
+    """
+    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
 
 
 def kyd(data, full_statistics=False):
