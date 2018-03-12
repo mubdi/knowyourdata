@@ -1,5 +1,19 @@
-import numpy as np
+"""
+KnowYourData
+============
+
+A rapid and lightweight module to describe the statistics and structure of
+data arrays for interactive use.
+
+The most simple use case to display data is if you have a numpy array 'x':
+
+    >>> from knowyourdata import kyd
+    >>> kyd(x)
+
+"""
+
 import sys
+import numpy as np
 
 
 class KYD(object):
@@ -42,28 +56,36 @@ class KYD(object):
 
     def get_basic_stats(self):
         """Get basic statistics about array"""
-        self.min = np.min(self.filt_data)
-        self.max = np.max(self.filt_data)
+        self.min = np.float_(np.min(self.filt_data))
+        self.max = np.float_(np.max(self.filt_data))
         self.range = self.max - self.min
         self.mean = np.mean(self.filt_data)
         self.std = np.std(self.filt_data)
-        self.median = np.median(self.filt_data)
-        self.firstquartile = np.percentile(self.filt_data, 25)
-        self.thirdquartile = np.percentile(self.filt_data, 75)
-        self.cl_99 = np.percentile(self.filt_data, np.array([0.5, 99.5]))
-        self.cl_95 = np.percentile(self.filt_data, np.array([2.5, 97.5]))
-        self.cl_68 = np.percentile(self.filt_data, np.array([16.0, 84.0]))
+        self.median = np.float_(np.median(self.filt_data))
+        self.firstquartile = np.float_(np.percentile(self.filt_data, 25))
+        self.thirdquartile = np.float_(np.percentile(self.filt_data, 75))
+        self.cl_99 = np.float_(
+            np.percentile(self.filt_data, np.array([0.5, 99.5])))
+        self.cl_95 = np.float_(
+            np.percentile(self.filt_data, np.array([2.5, 97.5])))
+        self.cl_68 = np.float_(
+            np.percentile(self.filt_data, np.array([16.0, 84.0])))
 
     def display_basic_stats(self):
         """Display basic statistics of array"""
         pstr_list = []
 
+        # Heading for Section
+
         pstr_struct_header1 = '\033[1m' + "Basic Statistics  " + '\033[0m'
+        pstr_struct_header2 = ''
 
         pstr_list.append(pstr_struct_header1)
+        pstr_list.append(pstr_struct_header2)
+
+        # Mean and Standard Deviation
 
         pstr_meanstdhead = (
-            "\n"
             "{0:^15}"
             "{1:^15}"
         ).format("Mean", "Std Dev")
@@ -81,8 +103,11 @@ class KYD(object):
         ).format(pstr_meanstdstat, self=self)
         pstr_list.append(pstr_meanstdstat)
 
+        pstr_list.append("")
+
+        # Three point statistics
+
         pstr_3pthead = (
-            "\n"
             "{0:^10}"
             "{1:^10}"
             "{2:^10}"
@@ -106,8 +131,11 @@ class KYD(object):
         ).format(pstr_3ptstat, self=self)
         pstr_list.append(pstr_3ptstat)
 
+        pstr_list.append("")
+
+        # Confidence Levels
+
         pstr_clhead = (
-            "\n"
             "{0:^10}"
             "{1:^10}"
             "{2:^10}"
@@ -149,26 +177,26 @@ class KYD(object):
         pstr_list.append(pstr_struct_header2)
 
         pstr_n_dim = (
-            "Number of Dimensions:"
-            "{self.ndim:>15}").format(
+            "Number of Dimensions:\t"
+            "{self.ndim}").format(
                 self=self)
         pstr_list.append(pstr_n_dim)
 
         pstr_shape = (
-            "Shape of Dimensions: "
-            "{self.shape!s:>15}").format(
+            "Shape of Dimensions:\t"
+            "{self.shape}").format(
                 self=self)
         pstr_list.append(pstr_shape)
 
         pstr_dtype = (
-            "Array Data Type:     "
-            "{self.dtype!s:>15}").format(
+            "Array Data Type:\t"
+            "{self.dtype}").format(
                 self=self)
         pstr_list.append(pstr_dtype)
 
         pstr_memsize = (
-            "Memory Size: "
-            "{self.human_memsize:>15}").format(
+            "Memory Size:\t\t"
+            "{self.human_memsize}").format(
                 self=self)
         pstr_list.append(pstr_memsize)
 
@@ -183,42 +211,46 @@ class KYD(object):
         print()
         pstr_basic = self.display_basic_stats()
         pstr_struct = self.display_struct()
+        n_basic = len(pstr_basic)
+        n_struct = len(pstr_struct)
 
-        l_colwidth = 0
-        for string1 in pstr_basic:
-            if len(string1) > l_colwidth:
-                l_colwidth = len(string1)
-        l_colwidth += 1
+        l_colwidth = max([len(x) for x in pstr_basic]) + 1
 
-        r_colwidth = 0
-        for string1 in pstr_basic:
-            if len(string1) > r_colwidth:
-                r_colwidth = len(string1)
+        r_colwidth = max([len(x) for x in pstr_struct]) + 2
 
         # new_colwidth = self.col_width + 20
 
         # Finding the longest string
-        len_list = max([len(pstr_basic), len(pstr_struct)])
+        len_list = max([n_basic, n_struct])
 
         for i in range(len_list):
-            tmp_str = ''
-            if i < len(pstr_basic):
+            tmp_str = '| '
+            if i < n_basic:
                 tmp_str += (pstr_basic[i].ljust(l_colwidth))
             else:
                 tmp_str += ''.ljust(l_colwidth)
-            tmp_str += ' | '
-            if i < len(pstr_struct):
-                tmp_str += (pstr_struct[i]).ljust(r_colwidth)
+            tmp_str += '\t| '
+
+            if i < n_struct:
+                tmp_str += (pstr_struct[i].expandtabs().ljust(r_colwidth))
+            else:
+                tmp_str += ''.ljust(r_colwidth)
+            tmp_str += '\t|'
 
             print(tmp_str)
 
         print()
 
+    def clear_memory(self):
+        """Ensuring the Numpy Array does not exist in memory"""
+        del self.data
+        del self.filt_data
+
     def __init__(self, data):
         super(KYD, self).__init__()
 
         # Ensuring that the array is a numpy array
-        if type(data) != np.ndarray:
+        if not isinstance(data, np.ndarray):
             data = np.array(data)
 
         self.data = data
@@ -226,6 +258,7 @@ class KYD(object):
         self.check_finite()
         self.check_struct()
         self.get_basic_stats()
+        self.clear_memory()
 
 
 def sizeof_fmt(num, suffix='B'):
@@ -243,8 +276,11 @@ def sizeof_fmt(num, suffix='B'):
 def kyd(data, full_statistics=False):
     """Print statistics of any numpy array
 
+    data -- Numpy Array of Data
+
     Keyword arguments:
     full_statistics -- printing all detailed statistics of the sources
+    (Currently Not Implemented)
 
     """
 
