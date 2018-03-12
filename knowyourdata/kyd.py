@@ -14,7 +14,8 @@ class KYD(object):
     f_hasinf = False
 
     # Display Settings
-    col_width = 20
+    col_width = 10
+    precision = 4
 
     def check_finite(self):
         """Checking to see if all elements are finite and setting flags"""
@@ -45,39 +46,93 @@ class KYD(object):
         self.range = self.max - self.min
         self.mean = np.mean(self.filt_data)
         self.std = np.std(self.filt_data)
+        self.median = np.median(self.filt_data)
+        self.firstquartile = np.percentile(self.filt_data, 25)
+        self.thirdquartile = np.percentile(self.filt_data, 75)
+        self.cl_99 = np.percentile(self.filt_data, np.array([0.5, 99.5]))
+        self.cl_95 = np.percentile(self.filt_data, np.array([2.5, 97.5]))
+        self.cl_68 = np.percentile(self.filt_data, np.array([16.0, 84.0]))
 
     def display_basic_stats(self):
         """Display basic statistics of array"""
         pstr_list = []
 
-        pstr_struct_header0 = "                  "
-        pstr_struct_header1 = "Basic Statistics  "
-        pstr_struct_header2 = "                  "
+        pstr_struct_header1 = '\033[1m' + "Basic Statistics  " + '\033[0m'
 
-        pstr_list.append(pstr_struct_header0)
         pstr_list.append(pstr_struct_header1)
-        pstr_list.append(pstr_struct_header2)
 
-        pstr_minmax = (
-            "Min "
-            "{self.min:_<{self.col_width}.4}"
-            "<= {self.range:^10.4} =>"
-            "{self.max:_>{self.col_width}.4}"
-            " Max"
+        pstr_meanstdhead = (
+            "\n"
+            "{0:^15}"
+            "{1:^15}"
+        ).format("Mean", "Std Dev")
+        pstr_meanstdhead = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_meanstdhead, self=self)
+        pstr_list.append(pstr_meanstdhead)
+
+        pstr_meanstdstat = (
+            "{self.mean:^15.{self.precision}}"
+            "{self.std:^15.{self.precision}}"
         ).format(self=self)
-        pstr_list.append(pstr_minmax)
+        pstr_meanstdstat = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_meanstdstat, self=self)
+        pstr_list.append(pstr_meanstdstat)
 
-        pstr_meanstd = (
-            "Mean: "
-            "{self.mean:>{self.col_width}.4}"
-            " Standard Deviation: "
-            "{self.std:>{self.col_width}.4}"
+        pstr_3pthead = (
+            "\n"
+            "{0:^10}"
+            "{1:^10}"
+            "{2:^10}"
+            "{3:^10}"
+            "{4:^10}"
+        ).format('Min,', '1Q', 'Median', '3Q', 'Max')
+        pstr_3pthead = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_3pthead, self=self)
+        pstr_list.append(pstr_3pthead)
+
+        pstr_3ptstat = (
+            "{self.min:^10.{self.precision}}"
+            "{self.firstquartile:^10.{self.precision}}"
+            "{self.median:^10.{self.precision}}"
+            "{self.thirdquartile:^10.{self.precision}}"
+            "{self.max:^10.{self.precision}}"
         ).format(self=self)
-        pstr_list.append(pstr_meanstd)
+        pstr_3ptstat = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_3ptstat, self=self)
+        pstr_list.append(pstr_3ptstat)
 
-        # Printing all Structure Parameters
-        for pstr in pstr_list:
-            print(pstr)
+        pstr_clhead = (
+            "\n"
+            "{0:^10}"
+            "{1:^10}"
+            "{2:^10}"
+            "{3:^10}"
+            "{4:^10}"
+            "{5:^10}"
+        ).format('-99 CL', '-95 CL', '-68 CL', '+68 CL', '+95 CL', '+99 CL')
+        pstr_clhead = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_clhead, self=self)
+        pstr_list.append(pstr_clhead)
+
+        pstr_clstat = (
+            "{self.cl_99[0]:^10.{self.precision}}"
+            "{self.cl_95[0]:^10.{self.precision}}"
+            "{self.cl_68[0]:^10.{self.precision}}"
+            "{self.cl_68[1]:^10.{self.precision}}"
+            "{self.cl_95[1]:^10.{self.precision}}"
+            "{self.cl_99[1]:^10.{self.precision}}"
+        ).format(self=self)
+        pstr_clstat = (
+            "{0:^{self.col_width}}"
+        ).format(pstr_clstat, self=self)
+        pstr_list.append(pstr_clstat)
+
+        return pstr_list
 
     def display_struct(self):
         """Display information about array structure"""
@@ -85,7 +140,7 @@ class KYD(object):
         pstr_list = []
 
         # pstr_struct_header0 = "................."
-        pstr_struct_header1 = "Array Structure  "
+        pstr_struct_header1 = '\033[1m' + "Array Structure  " + '\033[0m'
         pstr_struct_header2 = "                 "
 
         # pstr_list.append(pstr_struct_header0)
@@ -94,37 +149,64 @@ class KYD(object):
 
         pstr_n_dim = (
             "Number of Dimensions:"
-            "{self.ndim:>{self.col_width}}").format(
+            "{self.ndim:>15}").format(
             self=self)
         pstr_list.append(pstr_n_dim)
 
         pstr_shape = (
             "Shape of Dimensions: "
-            "{self.shape!s:>{self.col_width}}").format(
+            "{self.shape!s:>15}").format(
             self=self)
         pstr_list.append(pstr_shape)
 
         pstr_dtype = (
             "Array Data Type:     "
-            "{self.dtype!s:>{self.col_width}}").format(
+            "{self.dtype!s:>15}").format(
             self=self)
         pstr_list.append(pstr_dtype)
 
         pstr_memsize = (
             "Memory Size (bytes): "
-            "{self.memsize:>{self.col_width}}").format(
+            "{self.memsize:>15}").format(
             self=self)
         pstr_list.append(pstr_memsize)
 
-        # Printing all Structure Parameters
-        for pstr in pstr_list:
-            print(pstr)
+        return pstr_list
 
     def display(self, short=False):
         """Displaying all relevant statistics"""
         print()
-        self.display_struct()
-        self.display_basic_stats()
+        pstr_basic = self.display_basic_stats()
+        pstr_struct = self.display_struct()
+
+        l_colwidth = 0
+        for string1 in (pstr_basic):
+            if len(string1) > l_colwidth:
+                l_colwidth = len(string1)
+        l_colwidth += 1
+
+        r_colwidth = 0
+        for string1 in (pstr_basic):
+            if len(string1) > r_colwidth:
+                r_colwidth = len(string1)
+
+        # new_colwidth = self.col_width + 20
+
+        # Finding the longest string
+        len_list = max([len(pstr_basic), len(pstr_struct)])
+
+        for i in range(len_list):
+            tmp_str = ''
+            if i < len(pstr_basic):
+                tmp_str += (pstr_basic[i].ljust(l_colwidth))
+            else:
+                tmp_str += ''.ljust(l_colwidth)
+            tmp_str += ' | '
+            if i < len(pstr_struct):
+                tmp_str += (pstr_struct[i]).ljust(r_colwidth)
+
+            print(tmp_str)
+
         print()
 
     def __init__(self, data):
