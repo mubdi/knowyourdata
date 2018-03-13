@@ -15,12 +15,11 @@ The simplest way to use KnowYourData is to pass it a numpy array:
    x = np.random.randn(200)
    kyd(x)
 
-Contents: 
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   index
    quickstart
    installation
    usage
