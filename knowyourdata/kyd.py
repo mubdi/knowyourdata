@@ -66,7 +66,7 @@ class KYD(object):
             self.min = self.max = self.range = np.nan
             self.mean = self.std = self.median = np.nan
             self.firstquartile = self.thirdquartile = np.nan
-            self.cl_68 = self.cl_95 = self.cl_99 = np.array([np.nan, np.nan])
+            self.ci_68 = self.ci_95 = self.ci_99 = np.array([np.nan, np.nan])
 
             return
 
@@ -78,11 +78,11 @@ class KYD(object):
         self.median = np.float_(np.median(self.filt_data))
         self.firstquartile = np.float_(np.percentile(self.filt_data, 25))
         self.thirdquartile = np.float_(np.percentile(self.filt_data, 75))
-        self.cl_99 = np.float_(
+        self.ci_99 = np.float_(
             np.percentile(self.filt_data, np.array([0.5, 99.5])))
-        self.cl_95 = np.float_(
+        self.ci_95 = np.float_(
             np.percentile(self.filt_data, np.array([2.5, 97.5])))
-        self.cl_68 = np.float_(
+        self.ci_68 = np.float_(
             np.percentile(self.filt_data, np.array([16.0, 84.0])))
 
     def display_basic_stats(self):
@@ -156,19 +156,19 @@ class KYD(object):
             "{3:^10}"
             "{4:^10}"
             "{5:^10}"
-        ).format('-99 CL', '-95 CL', '-68 CL', '+68 CL', '+95 CL', '+99 CL')
+        ).format('-99 ci', '-95 ci', '-68 ci', '+68 ci', '+95 ci', '+99 ci')
         pstr_clhead = (
             "{0:^{self.col_width}}"
         ).format(pstr_clhead, self=self)
         pstr_list.append(pstr_clhead)
 
         pstr_clstat = (
-            "{self.cl_99[0]:^10.{self.precision}}"
-            "{self.cl_95[0]:^10.{self.precision}}"
-            "{self.cl_68[0]:^10.{self.precision}}"
-            "{self.cl_68[1]:^10.{self.precision}}"
-            "{self.cl_95[1]:^10.{self.precision}}"
-            "{self.cl_99[1]:^10.{self.precision}}"
+            "{self.ci_99[0]:^10.{self.precision}}"
+            "{self.ci_95[0]:^10.{self.precision}}"
+            "{self.ci_68[0]:^10.{self.precision}}"
+            "{self.ci_68[1]:^10.{self.precision}}"
+            "{self.ci_95[1]:^10.{self.precision}}"
+            "{self.ci_99[1]:^10.{self.precision}}"
         ).format(self=self)
         pstr_clstat = (
             "{0:^{self.col_width}}"

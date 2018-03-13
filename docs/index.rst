@@ -19,7 +19,6 @@ The simplest way to use KnowYourData is to pass it a numpy array:
    :maxdepth: 2
    :caption: Contents:
 
-   index
    quickstart
    installation
    usage

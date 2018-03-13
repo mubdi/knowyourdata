@@ -51,4 +51,4 @@ Development To Do:
 * Create simple options for graphs and the like
 
 ### Docs
-* Write Sphinx Docs
+* ~~Write Sphinx Docs~~
