@@ -24,6 +24,7 @@ class KYD(object):
 
     # Initial Flags
     f_allfinite = False
+    f_allnonfinite = False
     f_hasnan = False
     f_hasinf = False
 
@@ -38,7 +39,11 @@ class KYD(object):
             self.f_allfinite = True
         else:
             finite_inds = np.where(np.isfinite(self.data))
+
             self.filt_data = self.data[finite_inds]
+
+            if self.filt_data.size == 0:
+                self.f_allnonfinite = True
 
             if np.any(np.isnan(self.data)):
                 self.f_hasnan = True
@@ -56,6 +61,15 @@ class KYD(object):
 
     def get_basic_stats(self):
         """Get basic statistics about array"""
+
+        if self.f_allnonfinite:
+            self.min = self.max = self.range = np.nan
+            self.mean = self.std = self.median = np.nan
+            self.firstquartile = self.thirdquartile = np.nan
+            self.cl_68 = self.cl_95 = self.cl_99 = np.array([np.nan, np.nan])
+
+            return
+
         self.min = np.float_(np.min(self.filt_data))
         self.max = np.float_(np.max(self.filt_data))
         self.range = self.max - self.min
@@ -113,7 +127,7 @@ class KYD(object):
             "{2:^10}"
             "{3:^10}"
             "{4:^10}"
-        ).format('Min,', '1Q', 'Median', '3Q', 'Max')
+        ).format('Min', '1Q', 'Median', '3Q', 'Max')
         pstr_3pthead = (
             "{0:^{self.col_width}}"
         ).format(pstr_3pthead, self=self)
@@ -208,7 +222,7 @@ class KYD(object):
         if short:
             pass
 
-        print()
+        print("")
         pstr_basic = self.display_basic_stats()
         pstr_struct = self.display_struct()
         n_basic = len(pstr_basic)
@@ -239,7 +253,7 @@ class KYD(object):
 
             print(tmp_str)
 
-        print()
+        print("")
 
     def clear_memory(self):
         """Ensuring the Numpy Array does not exist in memory"""
