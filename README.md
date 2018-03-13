@@ -1,21 +1,40 @@
-# knowyourdata
-A Simple Data Description Package for Python
-
 [![Build Status](https://travis-ci.org/mubdi/knowyourdata.svg?branch=master)](https://travis-ci.org/mubdi/knowyourdata)
 [![Build Status](https://scrutinizer-ci.com/g/mubdi/knowyourdata/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mubdi/knowyourdata/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mubdi/knowyourdata/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mubdi/knowyourdata/?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/knowyourdata/badge/?version=latest)](http://knowyourdata.readthedocs.io/en/latest/?badge=latest)
+
+# knowyourdata
+A Simple Data Description Package for Python. 
 
 A rapid and lightweight module to describe the statistics and structure of
-data arrays for interactive use.
+data arrays for interactive use. This project was started in 2018 and currently maintained by Mubdi Rahman.  
 
-The most simple use case to display data is if you have a numpy array 'x':
+## Installation
+
+### Dependencies 
+KnowYourData requires: 
+
+* Python (>=2.6 or >=3.4)
+* Numpy (>=1.10.0)
+
+### User Installation
+The easiest way to install KnowYourData is with `pip`:
+
+	pip install knowyourdata 
+
+## Usage 
+
+For full usage, details are available in the [documentation](http://knowyourdata.readthedocs.io/). The most simple use case to display data is if you have a numpy array 'x':
 
     >>> from knowyourdata import kyd
     >>> kyd(x)
 
+## Help and Support
+* Documentation: <http://knowyourdata.readthedocs.io/>
 
-To Do:
-------
+
+Development To Do:
+------------------
 ### Data Support
 * **Add support for Pandas**
 * Add support for masked arrays
