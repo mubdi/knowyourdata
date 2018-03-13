@@ -3,11 +3,10 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mubdi/knowyourdata/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mubdi/knowyourdata/?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/knowyourdata/badge/?version=latest)](http://knowyourdata.readthedocs.io/en/latest/?badge=latest)
 
-# knowyourdata
+# KnowYourData
 A Simple Data Description Package for Python. 
 
-A rapid and lightweight module to describe the statistics and structure of
-data arrays for interactive use. This project was started in 2018 and currently maintained by Mubdi Rahman.  
+A rapid and lightweight module to describe the statistics and structure of data arrays for interactive use. This project was started in 2018 and currently maintained by Mubdi Rahman.  
 
 ## Installation
 

@@ -1,22 +1,29 @@
-.. knowyourdata documentation master file, created by
-   sphinx-quickstart on Thu Mar  8 21:50:20 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to KnowYourData
+=======================
+`KnowYourData` is a rapid and lightweight module to describe the statistics and structure of data arrays for interactive use. This project was started in 2018 and currently maintained by Mubdi Rahman.  
 
-Welcome to knowyourdata's documentation!
-========================================
+This module provides a quick way of displaying such information as the mean, median, confidence intervals, and size and shape of the data array.
+
+The simplest way to use KnowYourData is to pass it a numpy array:
+
+.. code-block:: python
+
+   import numpy as np
+   from knowyourdata import kyd
+
+   # setting x as a numpy array
+   x = np.random.randn(200)
+   kyd(x)
+
+Contents: 
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
-   	# Creating Random Variable
-   	import numpy as np
-   	x = np.random.randn(500)
-
-	import knowyourdata as knd
-	knd.knd(x) 
+   quickstart
+   installation
+   usage
 
 
 Indices and tables
