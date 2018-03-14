@@ -14,6 +14,211 @@ The most simple use case to display data is if you have a numpy array 'x':
 
 import sys
 import numpy as np
+from IPython.display import display
+
+
+class KYD_data_summary(object):
+    """A class to store and display the summary information"""
+
+    text_repr = ""
+    html_repr = ""
+
+    # Display Settings
+    col_width = 10
+    precision = 4
+
+    def __repr__(self):
+        """
+        The Plain String Representation of the Data Summary
+        """
+        return self.text_repr
+
+    def _repr_html_(self):
+        """
+        The HTML Representation of the Data Summary
+        """
+        return self.html_repr
+
+    def make_txt_basic_stats(self):
+        """Make Text Representation of Basic Statistics"""
+        pstr_list = []
+
+        pstr_struct_header1 = "Basic Statistics  "
+        pstr_struct_header2 = ''
+
+        pstr_list.append(pstr_struct_header1)
+        pstr_list.append(pstr_struct_header2)
+
+        template_str = (
+            " {0:^10} "
+            " {1:>8} "
+            " {2:<10} "
+            " {3:>8} "
+            " {4:<10} "
+        )
+
+        tmp_data = [
+            [
+                "Mean:", "{kyd_class.mean:.{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "",
+                "Std Dev:", "{kyd_class.std:.{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class)
+            ],
+            ["Min:", "1Q:", "Median:", "3Q:", "Max:"],
+            [
+                "{kyd_class.min: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.firstquartile: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.median: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.thirdquartile: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.max: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+            ],
+            ['-99 CI:', '-95 CI:', '-68 CI:', '+68 CI:', '+95 CI:', '+99 CI:'],
+            [
+                "{kyd_class.ci_99[0]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.ci_95[0]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.ci_68[0]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.ci_68[1]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.ci_95[1]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+                "{kyd_class.ci_99[1]: .{kyd_class.precision}}".format(
+                    kyd_class=self.kyd_class),
+            ],
+        ]
+
+        n_tmp_data = len(tmp_data)
+
+        num_rows_in_cols = [len(i) for i in tmp_data]
+        num_rows = np.max(num_rows_in_cols)
+
+        for i in range(n_tmp_data):
+            tmp_col = tmp_data[i]
+            for j in range(num_rows_in_cols[i], num_rows):
+                tmp_col.append("")
+
+        for i in range(num_rows):
+            pstr_list.append(
+                template_str.format(
+                    tmp_data[0][i],
+                    tmp_data[1][i],
+                    tmp_data[2][i],
+                    tmp_data[3][i],
+                    tmp_data[4][i],
+                )
+            )
+
+        return pstr_list
+
+    def make_txt_struct(self):
+        """Make Text Representation of Array"""
+
+        pstr_list = []
+
+        # pstr_struct_header0 = "................."
+        # Commenting out Ansi Coloured Version
+        # pstr_struct_header1 = '\033[1m' + "Array Structure  " + '\033[0m'
+        pstr_struct_header1 = "Array Structure  "
+        pstr_struct_header2 = "                 "
+
+        # pstr_list.append(pstr_struct_header0)
+        pstr_list.append(pstr_struct_header1)
+        pstr_list.append(pstr_struct_header2)
+
+        pstr_n_dim = (
+            "Number of Dimensions:\t"
+            "{kyd_class.ndim}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_n_dim)
+
+        pstr_shape = (
+            "Shape of Dimensions:\t"
+            "{kyd_class.shape}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_shape)
+
+        pstr_dtype = (
+            "Array Data Type:\t"
+            "{kyd_class.dtype}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_dtype)
+
+        pstr_memsize = (
+            "Memory Size:\t\t"
+            "{kyd_class.human_memsize}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_memsize)
+
+        pstr_spacer = ("")
+        pstr_list.append(pstr_spacer)
+
+        pstr_numnan = (
+            "Number of NaN:\t"
+            "{kyd_class.num_nan}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_numnan)
+
+        pstr_numinf = (
+            "Number of Inf:\t"
+            "{kyd_class.num_inf}").format(
+                kyd_class=self.kyd_class)
+        pstr_list.append(pstr_numinf)
+
+        return pstr_list
+
+    def make_text_repr(self):
+        """Making final text string for plain text representation"""
+
+        tmp_text_repr = ""
+
+        tmp_text_repr += "\n"
+
+        pstr_basic = self.make_txt_basic_stats()
+        pstr_struct = self.make_txt_struct()
+
+        n_basic = len(pstr_basic)
+        n_struct = len(pstr_struct)
+
+        l_colwidth = max([len(x) for x in pstr_basic]) + 1
+
+        r_colwidth = max([len(x) for x in pstr_struct]) + 2
+
+        # new_colwidth = self.col_width + 20
+
+        # Finding the longest string
+        len_list = max([n_basic, n_struct])
+
+        for i in range(len_list):
+            tmp_str = '| '
+            if i < n_basic:
+                tmp_str += (pstr_basic[i].ljust(l_colwidth))
+            else:
+                tmp_str += ''.ljust(l_colwidth)
+            tmp_str += ' | '
+
+            if i < n_struct:
+                tmp_str += (pstr_struct[i].expandtabs().ljust(r_colwidth))
+            else:
+                tmp_str += ''.ljust(r_colwidth)
+            tmp_str += '\t|'
+
+            tmp_text_repr += tmp_str + "\n"
+
+        tmp_text_repr += "\n"
+        self.text_repr = tmp_text_repr
+
+    def __init__(self, kyd_class):
+        super(KYD_data_summary, self).__init__()
+        self.kyd_class = kyd_class
+        self.make_text_repr()
 
 
 class KYD(object):
@@ -92,171 +297,25 @@ class KYD(object):
         self.ci_68 = np.float_(
             np.percentile(self.filt_data, np.array([16.0, 84.0])))
 
-    def display_basic_stats_new(self):
-        """Display Basic Statistics"""
-        pstr_list = []
+    def make_summary(self):
+        """Making Data Summary"""
+        self.data_summary = KYD_data_summary(self)
 
-        pstr_struct_header1 = "Basic Statistics  "
-        pstr_struct_header2 = ''
-
-        pstr_list.append(pstr_struct_header1)
-        pstr_list.append(pstr_struct_header2)
-
-        template_str = (
-            " {0:^10} "
-            " {1:>8} "
-            " {2:<10} "
-            " {3:>8} "
-            " {4:<10} "
-        )
-
-        tmp_data = [
-            [
-                "Mean:", "{self.mean:.{self.precision}}".format(self=self),
-                "",
-                "Std Dev:", "{self.std:.{self.precision}}".format(self=self)
-            ],
-            ["Min:", "1Q:", "Median:", "3Q:", "Max:"],
-            [
-                "{self.min: .{self.precision}}".format(self=self),
-                "{self.firstquartile: .{self.precision}}".format(self=self),
-                "{self.median: .{self.precision}}".format(self=self),
-                "{self.thirdquartile: .{self.precision}}".format(self=self),
-                "{self.max: .{self.precision}}".format(self=self),
-            ],
-            ['-99 CI:', '-95 CI:', '-68 CI:', '+68 CI:', '+95 CI:', '+99 CI:'],
-            [
-                "{self.ci_99[0]: .{self.precision}}".format(self=self),
-                "{self.ci_95[0]: .{self.precision}}".format(self=self),
-                "{self.ci_68[0]: .{self.precision}}".format(self=self),
-                "{self.ci_68[1]: .{self.precision}}".format(self=self),
-                "{self.ci_95[1]: .{self.precision}}".format(self=self),
-                "{self.ci_99[1]: .{self.precision}}".format(self=self),
-            ],
-        ]
-
-        n_tmp_data = len(tmp_data)
-
-        num_rows_in_cols = [len(i) for i in tmp_data]
-        num_rows = np.max(num_rows_in_cols)
-
-        for i in range(n_tmp_data):
-            tmp_col = tmp_data[i]
-            for j in range(num_rows_in_cols[i], num_rows):
-                tmp_col.append("")
-
-        for i in range(num_rows):
-            pstr_list.append(
-                template_str.format(
-                    tmp_data[0][i],
-                    tmp_data[1][i],
-                    tmp_data[2][i],
-                    tmp_data[3][i],
-                    tmp_data[4][i],
-                )
-            )
-
-        return pstr_list
-
-    def display_struct(self):
-        """Display information about array structure"""
-
-        pstr_list = []
-
-        # pstr_struct_header0 = "................."
-        # Commenting out Ansi Coloured Version
-        # pstr_struct_header1 = '\033[1m' + "Array Structure  " + '\033[0m'
-        pstr_struct_header1 = "Array Structure  "
-        pstr_struct_header2 = "                 "
-
-        # pstr_list.append(pstr_struct_header0)
-        pstr_list.append(pstr_struct_header1)
-        pstr_list.append(pstr_struct_header2)
-
-        pstr_n_dim = (
-            "Number of Dimensions:\t"
-            "{self.ndim}").format(
-                self=self)
-        pstr_list.append(pstr_n_dim)
-
-        pstr_shape = (
-            "Shape of Dimensions:\t"
-            "{self.shape}").format(
-                self=self)
-        pstr_list.append(pstr_shape)
-
-        pstr_dtype = (
-            "Array Data Type:\t"
-            "{self.dtype}").format(
-                self=self)
-        pstr_list.append(pstr_dtype)
-
-        pstr_memsize = (
-            "Memory Size:\t\t"
-            "{self.human_memsize}").format(
-                self=self)
-        pstr_list.append(pstr_memsize)
-
-        pstr_spacer = ("")
-        pstr_list.append(pstr_spacer)
-
-        pstr_numnan = (
-            "Number of NaN:\t"
-            "{self.num_nan}").format(
-                self=self)
-        pstr_list.append(pstr_numnan)
-
-        pstr_numinf = (
-            "Number of Inf:\t"
-            "{self.num_inf}").format(
-                self=self)
-        pstr_list.append(pstr_numinf)
-
-        return pstr_list
+    def clear_memory(self):
+        """Ensuring the Numpy Array does not exist in memory"""
+        del self.data
+        del self.filt_data
 
     def display(self, short=False):
         """Displaying all relevant statistics"""
 
         if short:
             pass
-
-        print("")
-        pstr_basic = self.display_basic_stats_new()
-        pstr_struct = self.display_struct()
-        n_basic = len(pstr_basic)
-        n_struct = len(pstr_struct)
-
-        l_colwidth = max([len(x) for x in pstr_basic]) + 1
-
-        r_colwidth = max([len(x) for x in pstr_struct]) + 2
-
-        # new_colwidth = self.col_width + 20
-
-        # Finding the longest string
-        len_list = max([n_basic, n_struct])
-
-        for i in range(len_list):
-            tmp_str = '| '
-            if i < n_basic:
-                tmp_str += (pstr_basic[i].ljust(l_colwidth))
-            else:
-                tmp_str += ''.ljust(l_colwidth)
-            tmp_str += ' | '
-
-            if i < n_struct:
-                tmp_str += (pstr_struct[i].expandtabs().ljust(r_colwidth))
-            else:
-                tmp_str += ''.ljust(r_colwidth)
-            tmp_str += '\t|'
-
-            print(tmp_str)
-
-        print("")
-
-    def clear_memory(self):
-        """Ensuring the Numpy Array does not exist in memory"""
-        del self.data
-        del self.filt_data
+        try:
+            get_ipython
+            display(self.data_summary)
+        except NameError:
+            print(self.data_summary)
 
     def __init__(self, data):
         super(KYD, self).__init__()
@@ -271,6 +330,7 @@ class KYD(object):
         self.check_struct()
         self.get_basic_stats()
         self.clear_memory()
+        self.make_summary()
 
 
 def sizeof_fmt(num, suffix='B'):

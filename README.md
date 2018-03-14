@@ -15,6 +15,7 @@ KnowYourData requires:
 
 * Python (>=2.6 or >=3.4)
 * Numpy (>=1.10.0)
+* ipython
 
 ### User Installation
 The easiest way to install KnowYourData is with `pip`:
@@ -46,7 +47,7 @@ Development To Do:
 * ~~Add basic statistics (mean, std deviation, median, quartiles)~~
 
 ### Display
-* Have output specific for ipython environment vs. jupyter environment vs. non-interactive environment
+* ~~Have output specific for ipython environment vs. jupyter environment vs. non-interactive environment~~
 * ~~For memory size, convert to human readable units~~
 * Create simple options for graphs and the like
 
