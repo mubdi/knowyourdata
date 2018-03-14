@@ -28,6 +28,10 @@ class KYD(object):
     f_hasnan = False
     f_hasinf = False
 
+    # Initialized Numbers
+    num_nan = 0
+    num_inf = 0
+
     # Display Settings
     col_width = 10
     precision = 4
@@ -47,8 +51,11 @@ class KYD(object):
 
             if np.any(np.isnan(self.data)):
                 self.f_hasnan = True
+                self.num_nan = np.sum(np.isnan(self.data))
+
             if np.any(np.isinf(self.data)):
                 self.f_hasinf = True
+                self.num_inf = np.sum(np.isinf(self.data))
 
     def check_struct(self):
         """Determining the Structure of the Numpy Array"""
@@ -85,95 +92,69 @@ class KYD(object):
         self.ci_68 = np.float_(
             np.percentile(self.filt_data, np.array([16.0, 84.0])))
 
-    def display_basic_stats(self):
-        """Display basic statistics of array"""
+    def display_basic_stats_new(self):
+        """Display Basic Statistics"""
         pstr_list = []
 
-        # Heading for Section
-
-        pstr_struct_header1 = '\033[1m' + "Basic Statistics  " + '\033[0m'
+        pstr_struct_header1 = "Basic Statistics  "
         pstr_struct_header2 = ''
 
         pstr_list.append(pstr_struct_header1)
         pstr_list.append(pstr_struct_header2)
 
-        # Mean and Standard Deviation
+        template_str = (
+            " {0:^10} "
+            " {1:>8} "
+            " {2:<10} "
+            " {3:>8} "
+            " {4:<10} "
+        )
 
-        pstr_meanstdhead = (
-            "{0:^15}"
-            "{1:^15}"
-        ).format("Mean", "Std Dev")
-        pstr_meanstdhead = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_meanstdhead, self=self)
-        pstr_list.append(pstr_meanstdhead)
+        tmp_data = [
+            [
+                "Mean:", "{self.mean:.{self.precision}}".format(self=self),
+                "",
+                "Std Dev:", "{self.std:.{self.precision}}".format(self=self)
+            ],
+            ["Min:", "1Q:", "Median:", "3Q:", "Max:"],
+            [
+                "{self.min: .{self.precision}}".format(self=self),
+                "{self.firstquartile: .{self.precision}}".format(self=self),
+                "{self.median: .{self.precision}}".format(self=self),
+                "{self.thirdquartile: .{self.precision}}".format(self=self),
+                "{self.max: .{self.precision}}".format(self=self),
+            ],
+            ['-99 CI:', '-95 CI:', '-68 CI:', '+68 CI:', '+95 CI:', '+99 CI:'],
+            [
+                "{self.ci_99[0]: .{self.precision}}".format(self=self),
+                "{self.ci_95[0]: .{self.precision}}".format(self=self),
+                "{self.ci_68[0]: .{self.precision}}".format(self=self),
+                "{self.ci_68[1]: .{self.precision}}".format(self=self),
+                "{self.ci_95[1]: .{self.precision}}".format(self=self),
+                "{self.ci_99[1]: .{self.precision}}".format(self=self),
+            ],
+        ]
 
-        pstr_meanstdstat = (
-            "{self.mean:^15.{self.precision}}"
-            "{self.std:^15.{self.precision}}"
-        ).format(self=self)
-        pstr_meanstdstat = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_meanstdstat, self=self)
-        pstr_list.append(pstr_meanstdstat)
+        n_tmp_data = len(tmp_data)
 
-        pstr_list.append("")
+        num_rows_in_cols = [len(i) for i in tmp_data]
+        num_rows = np.max(num_rows_in_cols)
 
-        # Three point statistics
+        for i in range(n_tmp_data):
+            tmp_col = tmp_data[i]
+            for j in range(num_rows_in_cols[i], num_rows):
+                tmp_col.append("")
 
-        pstr_3pthead = (
-            "{0:^10}"
-            "{1:^10}"
-            "{2:^10}"
-            "{3:^10}"
-            "{4:^10}"
-        ).format('Min', '1Q', 'Median', '3Q', 'Max')
-        pstr_3pthead = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_3pthead, self=self)
-        pstr_list.append(pstr_3pthead)
-
-        pstr_3ptstat = (
-            "{self.min:^10.{self.precision}}"
-            "{self.firstquartile:^10.{self.precision}}"
-            "{self.median:^10.{self.precision}}"
-            "{self.thirdquartile:^10.{self.precision}}"
-            "{self.max:^10.{self.precision}}"
-        ).format(self=self)
-        pstr_3ptstat = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_3ptstat, self=self)
-        pstr_list.append(pstr_3ptstat)
-
-        pstr_list.append("")
-
-        # Confidence Levels
-
-        pstr_clhead = (
-            "{0:^10}"
-            "{1:^10}"
-            "{2:^10}"
-            "{3:^10}"
-            "{4:^10}"
-            "{5:^10}"
-        ).format('-99 ci', '-95 ci', '-68 ci', '+68 ci', '+95 ci', '+99 ci')
-        pstr_clhead = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_clhead, self=self)
-        pstr_list.append(pstr_clhead)
-
-        pstr_clstat = (
-            "{self.ci_99[0]:^10.{self.precision}}"
-            "{self.ci_95[0]:^10.{self.precision}}"
-            "{self.ci_68[0]:^10.{self.precision}}"
-            "{self.ci_68[1]:^10.{self.precision}}"
-            "{self.ci_95[1]:^10.{self.precision}}"
-            "{self.ci_99[1]:^10.{self.precision}}"
-        ).format(self=self)
-        pstr_clstat = (
-            "{0:^{self.col_width}}"
-        ).format(pstr_clstat, self=self)
-        pstr_list.append(pstr_clstat)
+        for i in range(num_rows):
+            pstr_list.append(
+                template_str.format(
+                    tmp_data[0][i],
+                    tmp_data[1][i],
+                    tmp_data[2][i],
+                    tmp_data[3][i],
+                    tmp_data[4][i],
+                )
+            )
 
         return pstr_list
 
@@ -183,7 +164,9 @@ class KYD(object):
         pstr_list = []
 
         # pstr_struct_header0 = "................."
-        pstr_struct_header1 = '\033[1m' + "Array Structure  " + '\033[0m'
+        # Commenting out Ansi Coloured Version
+        # pstr_struct_header1 = '\033[1m' + "Array Structure  " + '\033[0m'
+        pstr_struct_header1 = "Array Structure  "
         pstr_struct_header2 = "                 "
 
         # pstr_list.append(pstr_struct_header0)
@@ -214,6 +197,21 @@ class KYD(object):
                 self=self)
         pstr_list.append(pstr_memsize)
 
+        pstr_spacer = ("")
+        pstr_list.append(pstr_spacer)
+
+        pstr_numnan = (
+            "Number of NaN:\t"
+            "{self.num_nan}").format(
+                self=self)
+        pstr_list.append(pstr_numnan)
+
+        pstr_numinf = (
+            "Number of Inf:\t"
+            "{self.num_inf}").format(
+                self=self)
+        pstr_list.append(pstr_numinf)
+
         return pstr_list
 
     def display(self, short=False):
@@ -223,7 +221,7 @@ class KYD(object):
             pass
 
         print("")
-        pstr_basic = self.display_basic_stats()
+        pstr_basic = self.display_basic_stats_new()
         pstr_struct = self.display_struct()
         n_basic = len(pstr_basic)
         n_struct = len(pstr_struct)
@@ -243,7 +241,7 @@ class KYD(object):
                 tmp_str += (pstr_basic[i].ljust(l_colwidth))
             else:
                 tmp_str += ''.ljust(l_colwidth)
-            tmp_str += '\t| '
+            tmp_str += ' | '
 
             if i < n_struct:
                 tmp_str += (pstr_struct[i].expandtabs().ljust(r_colwidth))
