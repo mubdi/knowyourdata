@@ -13,7 +13,7 @@ A rapid and lightweight module to describe the statistics and structure of data 
 ### Dependencies 
 KnowYourData requires: 
 
-* Python (>=2.6 or >=3.4)
+* Python (>=2.7 or >=3.4)
 * Numpy (>=1.10.0)
 * ipython
 
