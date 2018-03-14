@@ -16,6 +16,10 @@ import sys
 import numpy as np
 from IPython.display import display
 
+# Getting HTML Template
+from . import kyd_html_display_template
+kyd_html_template = kyd_html_display_template.kyd_html_template
+
 
 class KYD_data_summary(object):
     """A class to store and display the summary information"""
@@ -38,6 +42,9 @@ class KYD_data_summary(object):
         The HTML Representation of the Data Summary
         """
         return self.html_repr
+
+    def make_html_repr(self):
+        self.html_repr = kyd_html_template.format(kyd_class=self.kyd_class)
 
     def make_txt_basic_stats(self):
         """Make Text Representation of Basic Statistics"""
@@ -219,6 +226,7 @@ class KYD_data_summary(object):
         super(KYD_data_summary, self).__init__()
         self.kyd_class = kyd_class
         self.make_text_repr()
+        self.make_html_repr()
 
 
 class KYD(object):
