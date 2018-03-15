@@ -34,23 +34,3 @@ For full usage, details are available in the ` documentation <http://knowyourdat
 Help and Support
 ----------------
 * Documentation: http://knowyourdata.readthedocs.io/
-
-
-Development To Do:
-==================
-Data Support
-------------
-* **Add support for Pandas**
-* Add support for masked arrays
-* Add support for record arrays
-* Allow n-dimensional arrays 
-* Special support for boolean arrays
-
-
-Display
--------
-* Create simple options for graphs and the like
-
-Docs
-----
-* Write Extended Sphinx Docs
