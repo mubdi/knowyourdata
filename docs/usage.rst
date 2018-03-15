@@ -12,6 +12,19 @@ The simplest way to use KnowYourData is to pass it a numpy array:
    x = np.random.randn(200)
    kyd(x)
 
+   | Basic Statistics                                          | Array Structure                   |
+   |                                                           |                                   |
+   |    Mean:         Min:  -2.313       -99 CI:  -2.189       | Number of Dimensions:   1         |
+   |   0.04288         1Q:  -0.6402      -95 CI:  -1.969       | Shape of Dimensions:    (200,)    |
+   |               Median:   0.009476    -68 CI:  -0.8657      | Array Data Type:        float64   |
+   |   Std Dev:        3Q:   0.633       +68 CI:   1.041       | Memory Size:            1.7KiB    |
+   |    0.9815        Max:   3.276       +95 CI:   2.075       |                                   |
+   |                                     +99 CI:   3.195       | Number of NaN:  0                 |
+   |                                                           | Number of Inf:  0                 |
+
+or if you are in a jupyter notebook, an HTML version.
+
+
 The ``kyd`` function returns a structure that contains the information extracted from the data array. You can access this information through:
 
 .. code-block:: python

@@ -1,4 +1,8 @@
-kyd_html_template = """
+"""
+Template for HTML version of Data Summary
+"""
+
+kyd_htmltemplate = """
 <style>
 
 .kydbox {{
@@ -13,15 +17,18 @@ kyd_html_template = """
 
 .kydfloatboxleft {{
   margin: 5px;
+  padding-left: 10px;
   float: left;
   border-right-width: 2px;
   border-right-style: solid;
   border-right-color: #CCCCCC;
-  padding-right: 5px;
+  padding-right: 15px;
+  margin-right: 15px;
 }}
 
 .kydfloatboxright {{
   margin: 5px;
+  padding-right: 10px;
   float: right;
 }}
 
@@ -29,6 +36,7 @@ kyd_html_template = """
   font-size: 10pt;
   font-weight: bold;
   margin-top: 5px;
+  margin-bottom: 5px;
 }}
 
 .kydpropertylabel {{
@@ -46,7 +54,7 @@ table.kydarray_structure {{
 
 table.kydbasic_stats td,
 table.kydarray_structure td {{
-  padding: 3px;
+  padding: 3px 10px 3px 10px;
 }}
 
 .kydbottomborder {{
@@ -60,17 +68,15 @@ table.kydarray_structure td {{
 <div class="kydbox" , style="float:left">
 
   <div class="kydfloatboxleft">
-    <span class="kydsubtitle">Basic Statistics</span>
+    <div class="kydsubtitle">Basic Statistics</div>
+
+    <span class='kydpropertylabel'>Mean:</span>
+    {kyd_class.mean:.{kyd_class.precision}}
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <span class='kydpropertylabel'>Std Dev:</span>
+    {kyd_class.std:.{kyd_class.precision}}
+
     <table class="kydbasic_stats">
-      <tr>
-      <td colspan=4 style='text-align:center'>
-        <span class='kydpropertylabel'>Mean:</span>
-        {kyd_class.mean:.{kyd_class.precision}}
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <span class='kydpropertylabel'>Std Dev:</span>
-        {kyd_class.mean:.{kyd_class.precision}}
-      </td>
-      </tr>
       <tr>
         <td class='kydpropertylabel'>Min:</td>
         <td>{kyd_class.min:.{kyd_class.precision}}</td>
@@ -112,7 +118,7 @@ table.kydarray_structure td {{
   </div>
 
   <div class="kydfloatboxright">
-    <span class="kydsubtitle">Array Structure</span>
+    <div class="kydsubtitle">Array Structure</div>
     <table class="kydarray_structure">
       <tr>
         <td class='kydpropertylabel'>Number of Dimensions:</td>

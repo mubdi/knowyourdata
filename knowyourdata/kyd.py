@@ -18,10 +18,10 @@ from IPython.display import display
 
 # Getting HTML Template
 from . import kyd_html_display_template
-kyd_html_template = kyd_html_display_template.kyd_html_template
+kyd_htmltemplate = kyd_html_display_template.kyd_htmltemplate
 
 
-class KYD_data_summary(object):
+class KYD_datasummary(object):
     """A class to store and display the summary information"""
 
     text_repr = ""
@@ -44,7 +44,8 @@ class KYD_data_summary(object):
         return self.html_repr
 
     def make_html_repr(self):
-        self.html_repr = kyd_html_template.format(kyd_class=self.kyd_class)
+        """Make HTML Representation of Data Summary"""
+        self.html_repr = kyd_htmltemplate.format(kyd_class=self.kyd_class)
 
     def make_txt_basic_stats(self):
         """Make Text Representation of Basic Statistics"""
@@ -223,7 +224,7 @@ class KYD_data_summary(object):
         self.text_repr = tmp_text_repr
 
     def __init__(self, kyd_class):
-        super(KYD_data_summary, self).__init__()
+        super(KYD_datasummary, self).__init__()
         self.kyd_class = kyd_class
         self.make_text_repr()
         self.make_html_repr()
@@ -307,7 +308,7 @@ class KYD(object):
 
     def make_summary(self):
         """Making Data Summary"""
-        self.data_summary = KYD_data_summary(self)
+        self.data_summary = KYD_datasummary(self)
 
     def clear_memory(self):
         """Ensuring the Numpy Array does not exist in memory"""
